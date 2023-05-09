@@ -28,7 +28,7 @@ library(kableExtra)
 library(readr)
 library(patchwork)
 
-setwd('/Users/katelynhollingsworth/Documents/AU Docs/Data Analytics')
+setwd('/Users/katelynhollingsworth/Documents/AU Docs/Data Analytics/Final Portfolio/Preso 1')
 
 broadway = read_csv('broadway_14_16.csv')
 broadway = broadway %>%
