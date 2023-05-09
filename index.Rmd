@@ -1,0 +1,77 @@
+---
+title: "Musicals vs. Plays"
+subtitle: "Broadway show attendance January - August 2016"
+author: "Katelyn Hollingsworth"
+institute: "American University"
+output:
+    xaringan::moon_reader:
+      nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = F, warning = F, dev = "png")
+
+knitr::opts_chunk$set(
+  fig.asp = 12/16,
+  fig.align = 'center',
+  echo = F,
+  out.width = "100%",
+  dpi= 300)
+  
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(readr)
+library(patchwork)
+
+setwd('/Users/katelynhollingsworth/Documents/AU Docs/Data Analytics/Final Portfolio/Preso 1')
+
+broadway = read_csv('broadway_14_16.csv')
+broadway = broadway %>%
+  filter(Date.Year == 2016,
+         Show.Type != 'Special') %>%
+  mutate(mydate = as.Date(Date.Full, format="%m/%d/%Y"))
+```
+Class: center, top
+## About the Data
+This data set is comprised of data collected weekly from January to August 2016 on Broadway shows. There were 995 observations of 14 variables, including date, show name, show theater, gross revenue of the show, attendance statistics, number of performances, and performance type (either Musical or Play).
+
+I hypothesized that musicals were more well attended than plays on Broadway. 
+
+To test this theory, I focused on:
+1. Date of performance
+2. Type of performance
+3. Attendance
+---
+```{r, echo = F}
+bwayplot = ggplot(broadway, aes(x = mydate, y = Statistics.Attendance, fill = Show.Type)) +
+  geom_point(position=position_jitter(h=0.1, w=0.1), alpha = 0.9, size = 3, pch=21, colour="Black") +
+  scale_fill_manual(name = "Show Type",
+                    values= c("Musical" = "limegreen",
+                              "Play" = "pink"))+
+  guides(fill=guide_legend(override.aes=list(colour=c("Musical" ="limegreen",
+                                                      "Play" = 'pink'))))+
+  scale_x_date(date_labels = "%b",
+               date_breaks = "1 month")+
+  labs(x = "Month", y = "Attendance",
+       title = "Are musicals or plays more well attended on Broadway?",
+       subtitle = "A review of the first 8 months of 2016") + 
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5, face = 'bold'),
+        plot.subtitle = element_text(hjust = 0.5, face = 'bold'),
+        panel.grid.major.y = element_line(colour = "grey"))
+plot(bwayplot)
+```
+
+---
+```{r, echo = F}
+bway2 = bwayplot + facet_wrap(~Show.Type) +
+  labs(title = NULL,
+       subtitle = NULL)
+
+(bwayplot / bway2) + plot_layout(guides = "collect") 
+```
